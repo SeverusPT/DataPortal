@@ -1,2 +1,2 @@
 # DataPortal
-Source code of SeverusPT data portal
+Source code of SeverusPT data geoportal
