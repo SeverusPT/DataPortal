@@ -1,0 +1,39 @@
+# Etapa 1: Construção da aplicação
+FROM node:22-bullseye AS builder
+
+WORKDIR /app
+
+# Copia os ficheiros essenciais para instalar dependências
+COPY package*.json ./
+
+# Instala todas as dependências
+RUN npm ci
+
+# Copia o restante do código
+COPY . .
+
+# Svelte-kit sync
+RUN npm run check
+
+# Construção da aplicação
+RUN npm run build
+
+# Remover dependências desnecessárias
+RUN npm prune --production
+
+# Etapa 2: Criar o container final para produção
+FROM node:22-bullseye
+
+WORKDIR /app
+
+# Copia apenas os ficheiros necessários do builder
+COPY --from=builder /app/build build/
+COPY --from=builder /app/node_modules node_modules/
+COPY package.json .
+
+# Definir variáveis de ambiente para produção
+ENV NODE_ENV=production
+
+EXPOSE 3000
+
+CMD ["node", "build"]

@@ -1,0 +1,23 @@
+services:
+  severuspt-prod:
+    container_name: severuspt-prod
+    image: severuspt-prod
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    ports:
+      - '3000:3000' # Mapeia a porta do host para o container
+    env_file:
+      - .env
+    environment:
+      - PORT=3000
+      - ALLOWED_HOST=geoportal.severus.pt # Domínio correto para PROD
+    volumes:
+      - ../data:/app/data:rw # Mapeia o código para o container
+    restart: always
+    networks:
+      - severuspt-network # Conectar à rede existente do Nginx
+
+networks:
+  severuspt-network:
+    external: true # Indica que essa rede já existe e não precisa ser criada

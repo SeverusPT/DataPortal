@@ -1,0 +1,21 @@
+# Usa uma imagem base com suporte a dependências globais
+FROM node:22-bullseye
+
+# Define diretório de trabalho
+WORKDIR /app
+
+# Copia package.json e instala todas as dependências
+COPY package*.json ./
+RUN npm install
+
+# Copia o restante do código
+COPY . .
+
+# Define variável de ambiente para desenvolvimento
+ENV NODE_ENV=development
+
+# Exponha a porta 3001 para desenvolvimento
+EXPOSE 3001
+
+# Comando para iniciar a aplicação
+CMD ["npm", "run", "dev"]
